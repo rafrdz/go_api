@@ -1,0 +1,19 @@
+version: '3'
+services:
+  api:
+    container_name: 'api'
+    build: '.'
+    ports:
+      - '8080:8080'
+    depends_on: 
+      - 'mongo'
+  mongo:
+    container_name: 'mongodb'
+    image: 'mongo:latest'
+    restart: always
+    environment: 
+      - MONGO_INITDB_ROOT_USERNAME=testUser
+      - MONGO_INITDB_ROOT_PASSWORD=testPassword
+      - MONGO_INITDB_DATABASE=books
+    ports:
+      - '27017:27017'
