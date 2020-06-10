@@ -1,23 +1,27 @@
-package controllers
+package controller
 
 import (
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rafrdz/go_api/db"
-	"github.com/rafrdz/go_api/models"
+	"github.com/rafrdz/go_api/model"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type CreateBookInput struct {
-	Title  string `json:"title" binding:"required"`
-	Author string `json:"author" binding:"required"`
-}
+func HandleCreateBook(c *gin.Context) (primitive.ObjectID, error) {
+	var book model.Book
+	if err := c.ShouldBindJSON(&book); err != nil {
+		log.Print(err)
+		return primitive.NilObjectID, err
+	}
 
-type UpdateBookInput struct {
-	Title  string `json:"title"`
-	Author string `json:"author"`
+	id, err := createBook(&book)
+	if err != nil {
+		log.Print(err)
+		return primitive.NilObjectID, err
+	}
+	return id
 }
 
 // func FindBooks(c *gin.Context) {
@@ -37,22 +41,6 @@ type UpdateBookInput struct {
 
 // 	c.JSON(http.StatusOK, gin.H{"data": book})
 // }
-
-func HandleCreateBook(c *gin.Context) {
-	var book models.Book
-	if err := c.ShouldBindJSON(&book); err != nil {
-		log.Print(err)
-		c.JSON(http.StatusBadRequest, gin.H{"msg": err})
-		return
-	}
-
-	id, err := createBook(&book)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": err})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"id": id})
-}
 
 func createBook(book *models.Book) (primitive.ObjectID, error) {
 	client, ctx, cancel := db.GetConnection()
