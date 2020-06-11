@@ -1,11 +1,12 @@
 package viewmodel
 
-type CreateBookInput struct {
+type NewBook struct {
 	Title  string `json:"title" binding:"required"`
 	Author string `json:"author" binding:"required"`
 }
 
-type UpdateBookInput struct {
-	Title  string `json:"title"`
-	Author string `json:"author"`
+type Book struct {
+	ID     string `json:"id" binding:"required"`
+	Title  string `json:"title" binding:"required"`
+	Author string `json:"author" binding:"required"`
 }

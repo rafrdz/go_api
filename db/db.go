@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
@@ -33,6 +32,5 @@ func GetConnection() (*mongo.Client, context.Context, context.CancelFunc) {
 		log.Printf("Failed to ping database: %v", err)
 	}
 
-	fmt.Println("Connected to MongoDB!")
 	return client, ctx, cancel
 }

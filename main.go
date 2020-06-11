@@ -6,7 +6,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rafrdz/go_api/controller"
-	"github.com/rafrdz/go_api/controllers"
 )
 
 var bookController controller.BookController = controller.NewBookController()
@@ -15,9 +14,10 @@ func main() {
 	r := gin.Default()
 
 	// Public routes, no authentication
-	apiRoutes := r.Group("/api") {
-		apiapiRoutes.POST("/books/new", func(c *gin.Context) {
-			bookID, err := contrcontrollers.HandleCreateBook(c)
+	apiRoutes := r.Group("/api")
+	{
+		apiRoutes.POST("/book/new", func(c *gin.Context) {
+			bookID, err := bookController.HandleCreateBook(c)
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err})
 			}

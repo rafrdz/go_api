@@ -1,11 +1,9 @@
 package model
 
-type Book struct {
-	Title  string `json:"title"`
-	Author string `json:"author"`
-}
+import "go.mongodb.org/mongo-driver/bson/primitive"
 
-type CreateBookInput struct {
-	Title  string `json:"title" binding:"required"`
-	Author string `json:"author" binding:"required"`
+type Book struct {
+	ID     primitive.ObjectID `json:"id",bson:"_id"`
+	Title  string `json:"title",bson:"title"`
+	Author string `json:"author",bson:"author"`
 }

@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/rafrdz/go_api/service"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -9,19 +10,33 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func HandleCreateBook(c *gin.Context) (primitive.ObjectID, error) {
+type BookController interface {
+	HandleCreateBook(c *gin.Context) (string, error)
+}
+
+type bookController struct {
+	bookService service.BookService
+}
+
+func NewBookController() BookController {
+	return &bookController{
+		bookService: service.NewBookService(),
+	}
+}
+
+func HandleCreateBook(c *gin.Context) (string, error) {
 	var book model.Book
 	if err := c.ShouldBindJSON(&book); err != nil {
 		log.Print(err)
-		return primitive.NilObjectID, err
+		return "", err
 	}
 
 	id, err := createBook(&book)
 	if err != nil {
 		log.Print(err)
-		return primitive.NilObjectID, err
+		return "", err
 	}
-	return id
+	return id.Hex(), nil
 }
 
 // func FindBooks(c *gin.Context) {
@@ -42,7 +57,7 @@ func HandleCreateBook(c *gin.Context) (primitive.ObjectID, error) {
 // 	c.JSON(http.StatusOK, gin.H{"data": book})
 // }
 
-func createBook(book *models.Book) (primitive.ObjectID, error) {
+func createBook(book *model.Book) (primitive.ObjectID, error) {
 	client, ctx, cancel := db.GetConnection()
 	defer cancel()
 	defer client.Disconnect(ctx)
