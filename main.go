@@ -23,13 +23,16 @@ func main() {
 			}
 			c.JSON(http.StatusOK, gin.H{"message": "Book Created!", "id": bookID})
 		})
+		apiRoutes.GET("/book/all", func(c *gin.Context) {
+			allBooks, err := bookController.HandleGetAllBooks(c)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err})
+			}
+			c.JSON(http.StatusOK, gin.H{"books": allBooks})
+		})
 	}
-	// TODO: Finish these other routes
-	//r.GET("/books", controllers.FindBooks)
-	//r.GET("/books/:id", controllers.FindBook)
-	//r.PATCH("/books/:id", controllers.UpdateBook)
-	//r.DELETE("/books/:id")
-
+	// TODO: Finish GetBookByID
+	// TODO: Finish DeleteBookByID
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"

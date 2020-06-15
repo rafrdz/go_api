@@ -16,3 +16,6 @@
 
 # Executable
 api
+
+# MongoDB Volume
+mongo_volume

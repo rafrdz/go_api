@@ -10,6 +10,7 @@ import (
 
 type BookController interface {
 	HandleCreateBook(c *gin.Context) (string, error)
+	HandleGetAllBooks(c *gin.Context) ([]viewmodel.Book, error)
 }
 
 type bookController struct {
@@ -35,6 +36,15 @@ func (controller *bookController) HandleCreateBook(c *gin.Context) (string, erro
 		return "", err
 	}
 	return id, nil
+}
+
+func (controller *bookController) HandleGetAllBooks(c *gin.Context) ([]viewmodel.Book, error) {
+	allBooks, err := controller.bookService.GetAllBooks()
+	if err != nil {
+		log.Print(err)
+		return nil, err
+	}
+	return allBooks, nil
 }
 
 // func FindBooks(c *gin.Context) {
