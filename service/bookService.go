@@ -1,11 +1,9 @@
 package service
 
 import (
-	"github.com/rafrdz/go_api/db"
 	"github.com/rafrdz/go_api/model"
 	"github.com/rafrdz/go_api/repository"
 	viewmodel "github.com/rafrdz/go_api/viewModel"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type BookService interface {
@@ -24,8 +22,7 @@ func NewBookService() BookService {
 
 func (service *bookService) CreateNewBook(newBook *viewmodel.NewBook) (string, error) {
 	var book model.Book
-	book.ID = primitive.NewObjectID()
 	book.Title = newBook.Title
 	book.Author = newBook.Author
-	return bookRepo.SaveNewBook(&book)
+	return service.bookRepo.SaveNewBook(&book)
 }

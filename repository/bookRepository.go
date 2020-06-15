@@ -24,7 +24,7 @@ func NewBookRepository(database string, collection string) BookRepository {
 }
 
 func (repo *bookRepository) SaveNewBook(book *model.Book) (string, error) {
-	client, ctx, cancel = db.GetConnection()
+	client, ctx, cancel := db.GetConnection()
 	defer cancel()
 	defer client.Disconnect(ctx)
 

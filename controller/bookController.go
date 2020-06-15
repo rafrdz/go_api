@@ -2,12 +2,10 @@ package controller
 
 import (
 	"github.com/rafrdz/go_api/service"
+	viewmodel "github.com/rafrdz/go_api/viewModel"
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rafrdz/go_api/db"
-	"github.com/rafrdz/go_api/model"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type BookController interface {
@@ -24,19 +22,19 @@ func NewBookController() BookController {
 	}
 }
 
-func HandleCreateBook(c *gin.Context) (string, error) {
-	var book model.Book
+func (controller *bookController) HandleCreateBook(c *gin.Context) (string, error) {
+	var book viewmodel.NewBook
 	if err := c.ShouldBindJSON(&book); err != nil {
 		log.Print(err)
 		return "", err
 	}
 
-	id, err := createBook(&book)
+	id, err := controller.bookService.CreateNewBook(&book)
 	if err != nil {
 		log.Print(err)
 		return "", err
 	}
-	return id.Hex(), nil
+	return id, nil
 }
 
 // func FindBooks(c *gin.Context) {
@@ -56,20 +54,6 @@ func HandleCreateBook(c *gin.Context) (string, error) {
 
 // 	c.JSON(http.StatusOK, gin.H{"data": book})
 // }
-
-func createBook(book *model.Book) (primitive.ObjectID, error) {
-	client, ctx, cancel := db.GetConnection()
-	defer cancel()
-	defer client.Disconnect(ctx)
-
-	result, err := client.Database("books").Collection("books").InsertOne(ctx, book)
-	if err != nil {
-		log.Printf("Could not create Book: %v", err)
-		return primitive.NilObjectID, err
-	}
-	oid := result.InsertedID.(primitive.ObjectID)
-	return oid, nil
-}
 
 // func UpdateBook(c *gin.Context) {
 // 	// Get model if exist
