@@ -20,15 +20,17 @@ func main() {
 			bookID, err := bookController.HandleCreateBook(c)
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err})
+			} else {
+				c.JSON(http.StatusOK, gin.H{"message": "Book Created!", "id": bookID})
 			}
-			c.JSON(http.StatusOK, gin.H{"message": "Book Created!", "id": bookID})
 		})
 		apiRoutes.GET("/book/all", func(c *gin.Context) {
 			allBooks, err := bookController.HandleGetAllBooks(c)
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err})
+			} else {
+				c.JSON(http.StatusOK, allBooks)
 			}
-			c.JSON(http.StatusOK, gin.H{"books": allBooks})
 		})
 	}
 	// TODO: Finish GetBookByID

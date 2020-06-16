@@ -11,7 +11,7 @@ import (
 
 const (
 	connectionTimeout = 10
-	uri               = "mongodb://testUser:testPassword@0.0.0.0:27017"
+	uri               = "mongodb://testUser:testPassword@db:27017"
 )
 
 func GetConnection() (*mongo.Client, context.Context, context.CancelFunc) {

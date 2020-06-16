@@ -5,10 +5,10 @@ services:
     image: 'go_app:latest'
     container_name: 'go_api'
     ports:
-      - '8080:8080'
+      - 8080:8080
     depends_on: 
-      - 'mongo'
-  mongo:
+      - 'db'
+  db:
     container_name: 'mongodb'
     image: 'mongo:latest'
     restart: always
@@ -18,5 +18,3 @@ services:
       - MONGO_INITDB_DATABASE=books
     volumes:
       - ./scripts/init.js:/docker-entrypoint-initdb.d/init.js:ro
-    ports:
-      - '27017:27017'
