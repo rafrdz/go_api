@@ -19,3 +19,6 @@ api
 
 # MongoDB Volume
 mongo_volume
+
+# idea Directory
+.idea
