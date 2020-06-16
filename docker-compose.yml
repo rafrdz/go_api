@@ -1,12 +1,13 @@
 version: '3.8'
 services:
-  # api:
-  #   container_name: 'api'
-  #   build: '.'
-  #   ports:
-  #     - '8080:8080'
-  #   depends_on: 
-  #     - 'mongo'
+  api:
+    build: '.'
+    image: 'go_app:latest'
+    container_name: 'go_api'
+    ports:
+      - '8080:8080'
+    depends_on: 
+      - 'mongo'
   mongo:
     container_name: 'mongodb'
     image: 'mongo:latest'
@@ -16,7 +17,6 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=testPassword
       - MONGO_INITDB_DATABASE=books
     volumes:
-      - ./mongo_volume:/data/db
       - ./scripts/init.js:/docker-entrypoint-initdb.d/init.js:ro
     ports:
       - '27017:27017'
