@@ -11,6 +11,8 @@ import (
 type BookController interface {
 	HandleCreateBook(c *gin.Context) (string, error)
 	HandleGetAllBooks(c *gin.Context) ([]viewmodel.Book, error)
+	HandleGetBookByID(c *gin.Context) (*viewmodel.Book, error)
+	HandleDeleteBookByID(c *gin.Context) (string, error)
 }
 
 type bookController struct {
@@ -47,53 +49,20 @@ func (controller *bookController) HandleGetAllBooks(c *gin.Context) ([]viewmodel
 	return allBooks, nil
 }
 
-// func FindBooks(c *gin.Context) {
-// 	var books []models.Book
-// 	models.DB.Find(&books)
+func (controller *bookController) HandleGetBookByID(c *gin.Context) (*viewmodel.Book, error) {
+	id := c.Param("id")
+	book, err := controller.bookService.GetBookByID(id)
+	if err != nil {
+		return nil, err
+	}
+	return book, nil
+}
 
-// 	c.JSON(http.StatusOK, gin.H{"data": books})
-// }
-
-// func FindBook(c *gin.Context) {
-// 	var book models.Book
-
-// 	if err := models.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
-// 		return
-// 	}
-
-// 	c.JSON(http.StatusOK, gin.H{"data": book})
-// }
-
-// func UpdateBook(c *gin.Context) {
-// 	// Get model if exist
-// 	var book models.Book
-// 	if err := models.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
-// 		return
-// 	}
-
-// 	// Validate input
-// 	var input UpdateBookInput
-// 	if err := c.ShouldBindJSON(&input); err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-// 		return
-// 	}
-
-// 	models.DB.Model(&book).Updates(input)
-
-// 	c.JSON(http.StatusOK, gin.H{"data": book})
-// }
-
-// func DeleteBook(c *gin.Context) {
-// 	// Get model if exist
-// 	var book models.Book
-// 	if err := models.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
-// 		return
-// 	}
-
-// 	models.DB.Delete(&book)
-
-// 	c.JSON(http.StatusOK, gin.H{"data": true})
-// }
+func (controller *bookController) HandleDeleteBookByID(c *gin.Context) (string, error) {
+	id := c.Param("id")
+	deleteResult, err := controller.bookService.DeleteBookByID(id)
+	if err != nil {
+		return "", err
+	}
+	return deleteResult, nil
+}

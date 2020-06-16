@@ -1,3 +1,4 @@
+// This script is used to populate the database with some initial data
 db.auth('testUser', 'testPassword');
 db = db.getSiblingDB('books');
 

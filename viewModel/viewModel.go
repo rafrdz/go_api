@@ -6,7 +6,7 @@ type NewBook struct {
 }
 
 type Book struct {
-	ID     string `json:"id" binding:"required"`
-	Title  string `json:"title" binding:"required"`
-	Author string `json:"author" binding:"required"`
+	ID     string `json:"id"`
+	Title  string `json:"title"`
+	Author string `json:"author"`
 }

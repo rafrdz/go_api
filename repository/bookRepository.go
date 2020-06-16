@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"github.com/rafrdz/go_api/db"
 	"github.com/rafrdz/go_api/model"
 	"go.mongodb.org/mongo-driver/bson"
@@ -12,6 +13,8 @@ import (
 type BookRepository interface {
 	SaveNewBook(book *model.Book) (string, error)
 	GetAllBooks() ([]model.Book, error)
+	GetBookByID(id primitive.ObjectID) (*model.Book, error)
+	DeleteBookByID(id primitive.ObjectID) (string, error)
 }
 
 type bookRepository struct {
@@ -61,4 +64,32 @@ func (repo *bookRepository) GetAllBooks() ([]model.Book, error) {
 	}
 	result.Close(context.TODO())
 	return allBooks, nil
+}
+
+func (repo *bookRepository) GetBookByID(id primitive.ObjectID) (*model.Book, error) {
+	client, ctx, cancel := db.GetConnection()
+	defer cancel()
+	defer client.Disconnect(ctx)
+
+	var dbBook model.Book
+	err := client.Database(repo.database).Collection(repo.collection).FindOne(ctx, bson.M{"_id": id}).Decode(&dbBook)
+	if err != nil {
+		return nil, err
+	}
+	return &dbBook, nil
+}
+
+func (repo *bookRepository) DeleteBookByID(id primitive.ObjectID) (string, error) {
+	client, ctx, cancel := db.GetConnection()
+	defer cancel()
+	defer client.Disconnect(ctx)
+
+	res, err := client.Database(repo.database).Collection(repo.collection).DeleteOne(ctx, bson.M{"_id": id})
+	if err != nil {
+		return "", err
+	}
+	if res.DeletedCount == 1 {
+		return "delete successful", nil
+	}
+	return "", fmt.Errorf("delete was not successful")
 }

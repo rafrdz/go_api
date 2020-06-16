@@ -11,6 +11,8 @@ import (
 type BookService interface {
 	CreateNewBook(newBook *viewmodel.NewBook) (string, error)
 	GetAllBooks() ([]viewmodel.Book, error)
+	GetBookByID(id string) (*viewmodel.Book, error)
+	DeleteBookByID(id string) (string, error)
 }
 
 type bookService struct {
@@ -46,4 +48,28 @@ func (service *bookService) GetAllBooks() ([]viewmodel.Book, error) {
 		allBooks = append(allBooks, newBook)
 	}
 	return allBooks, nil
+}
+
+func (service *bookService) GetBookByID(id string) (*viewmodel.Book, error) {
+	oId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	dbBook, err := service.bookRepo.GetBookByID(oId)
+	if err != nil {
+		return nil, err
+	}
+	var book viewmodel.Book
+	book.ID = dbBook.ID.Hex()
+	book.Title = dbBook.Title
+	book.Author = dbBook.Author
+	return &book, nil
+}
+
+func (service *bookService) DeleteBookByID(id string) (string, error) {
+	oId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return "", err
+	}
+	return service.bookRepo.DeleteBookByID(oId)
 }
